@@ -2,6 +2,10 @@ package lika_logger
 
 import (
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
 )
 import funk "github.com/thoas/go-funk"
 
@@ -49,18 +53,46 @@ func (l *PrintLogTarget) Log(message interface{}, extraData map[string]interface
 	return nil
 }
 
-func CreateTarget(driver string, levels []string, categories []string) *TargetInterface {
-	var target TargetInterface
+type FileLogTarget struct {
+	BaseLogTarget
+	FilePath string
+}
 
-	switch driver {
-	case "printer":
-		target = &PrintLogTarget{}
-	default:
-		target = &PrintLogTarget{}
+func (t *FileLogTarget) Log(message interface{}, extraData map[string]interface{}, level string, category string) error {
+	if err := createFileDir(t.FilePath); err != nil {
+		log.Fatalf("error creating directory: %v", err)
+
+		return err
 	}
 
-	target.SetCategories(categories)
-	target.SetLevels(levels)
+	f, err := openFile(t.FilePath)
 
-	return &target
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+
+		return err
+	}
+
+	defer f.Close()
+
+	log.SetOutput(io.MultiWriter(os.Stdout, f))
+	log.Println(message)
+
+	return nil
+}
+
+func openFile(filepath string) (*os.File, error) {
+	f, err := os.OpenFile(filepath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	return f, err
+}
+
+func createFileDir(filePath string) error {
+	fileDir := filepath.Dir(filePath)
+
+	if err := os.MkdirAll(fileDir, os.ModePerm); err != nil {
+		return err
+	}
+
+	return nil
 }
