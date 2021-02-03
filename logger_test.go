@@ -1,13 +1,16 @@
 package lika_logger
 
-import "testing"
-import "github.com/stretchr/testify/assert"
+import (
+	"github.com/lika_logger/targets"
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestLogger_AddTarget(t *testing.T) {
 
-	var target TargetInterface
+	var target targets.TargetInterface
 
-	target = &PrintLogTarget{}
+	target = &targets.PrintLogTarget{}
 	logger := Logger{}
 
 	logger.AddTarget(&target)

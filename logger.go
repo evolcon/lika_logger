@@ -1,15 +1,18 @@
 package lika_logger
 
-import funk "github.com/thoas/go-funk"
+import (
+	"github.com/lika_logger/targets"
+	"github.com/thoas/go-funk"
+)
 
 type Logger struct {
 	FlushInterval int
-	Targets       []TargetInterface
+	Targets       []targets.TargetInterface
 }
 
 func (l *Logger) Log(message interface{}, extraData map[string]interface{}, level string, category string, except []int) {
 	for k, target := range l.Targets {
-		if !funk.Contains(except, k) && target.canLog(level, category) {
+		if !funk.Contains(except, k) && target.CanLog(level, category) {
 			err := target.Log(message, extraData, level, category)
 
 			if err != nil {
@@ -26,6 +29,6 @@ func (l *Logger) Log(message interface{}, extraData map[string]interface{}, leve
 	}
 }
 
-func (l *Logger) AddTarget(target *TargetInterface) {
+func (l *Logger) AddTarget(target *targets.TargetInterface) {
 	l.Targets = append(l.Targets, *target)
 }

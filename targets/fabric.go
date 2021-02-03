@@ -1,4 +1,4 @@
-package lika_logger
+package targets
 
 func CreatePrintLogTarget(levels []string, categories []string) *TargetInterface {
 	var target TargetInterface
