@@ -1,7 +1,7 @@
 package lika_logger
 
 import (
-	"github.com/lika_logger/targets"
+	"./targets"
 	"github.com/thoas/go-funk"
 )
 
