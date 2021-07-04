@@ -1,4 +1,4 @@
-package targets
+package lika_logger
 
 import (
 	"io"
