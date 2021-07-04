@@ -1,4 +1,4 @@
-module github.com/lika_logger
+module github.com/evolcon/lika_logger
 
 go 1.15
 
